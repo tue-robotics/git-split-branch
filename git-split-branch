@@ -1,5 +1,7 @@
 #!/bin/bash
 
+EMPTY_TREE=$(git hash-object -t tree /dev/null)
+
 map()
 {
 	# if it was not rewritten, take the original
@@ -18,7 +20,7 @@ git_commit_non_empty_tree()
 	shift
 	if test $# = 3 && test "$1" = $(git rev-parse "$3^{tree}"); then
 		map "$mapbranch" "$3"
-	elif test $# = 1 && test "$1" = 4b825dc642cb6eb9a060e54bf8d69288fbee4904; then
+	elif test $# = 1 && test "$1" = "$EMPTY_TREE"; then
 		:
 	else
 		git commit-tree "$@"
@@ -123,7 +125,7 @@ done
 : ${rembr:=$srcbr}
 
 # By default, set base commit to empty tree
-: ${basecommit:=4b825dc642cb6eb9a060e54bf8d69288fbee4904}
+: ${basecommit:=$EMPTY_TREE}
 
 # Set up and change to temporary directory
 orig_dir=$(pwd)
@@ -313,7 +315,7 @@ if [ "$(is_bare_repository)" = false ] && [ "$rembr" = "$srcbr" ]; then
 	if [ -n "$sha1" ]; then
 		git read-tree -u -m "$srcbr" || exit
 	else
-		git read-tree -u -m 4b825dc642cb6eb9a060e54bf8d69288fbee4904 || exit
+		git read-tree -u -m $EMPTY_TREE || exit
 	fi
 fi
 
