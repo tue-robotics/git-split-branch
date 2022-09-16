@@ -18,7 +18,7 @@ git_commit_non_empty_tree()
 {
 	mapbranch=$1
 	shift
-	if test $# = 3 && test "$1" = $(git rev-parse "$3^{tree}"); then
+	if test $# = 3 && test "$1" = "$(git rev-parse "$3^{tree}")"; then
 		map "$mapbranch" "$3"
 	elif test $# = 1 && test "$1" = "$EMPTY_TREE"; then
 		:
@@ -69,9 +69,12 @@ get_reparents() {
 	printf '%s\n' "$parentstr"
 }
 
+# shellcheck disable=SC2034
 USAGE="[-d <workdir>] [-r <remainder>] [-b <base>] <source>
 	<dest1> <files>... [-- <dest2> <files>...]..."
+# shellcheck disable=SC2034
 OPTIONS_SPEC=
+# shellcheck disable=SC1091
 . git-sh-setup
 
 if [ "$(is_bare_repository)" = false ]; then
